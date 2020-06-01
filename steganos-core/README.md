@@ -1,17 +1,13 @@
-# steganos
+# steganos-core
 
 ## About
-steganos provides tools for simple text-in-image [steganography](https://en.wikipedia.org/wiki/Steganography).
+Core library for steganographic encoding/decoding, along with some i/o convenience classes
 
-steganos does not provide encryption—simply encrypt text before passing to steganos.
-
-PNGs are strongly recommended for source files and JPEGs are discouraged. Even at its highest setting, the Java
-JPEG ImageWriter cannot write losslessly, which corrupts the encoded message.
-
-Thanks to https://www.dyclassroom.com/image-processing-project/how-to-get-and-set-pixel-value-in-java for a lesson in java image libraries.
+Conspicuousness factor available to make the effect more prominent for demoing. Using a factor of 1, or provided delegator methods that don't accept a conspicuousness factor, keeps the effect below human visual detection.  
 
 ## Build
 `mvn clean package`
 
-## Examples
-![steganos output examples](examples.png?raw=true)
+## TODO
+- Add alpha channel support
+- +/- diff method without image prepping

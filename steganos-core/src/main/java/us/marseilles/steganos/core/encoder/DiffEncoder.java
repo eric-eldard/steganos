@@ -9,8 +9,15 @@ import java.awt.image.BufferedImage;
  * hitting the possible color channel floor). Max conspicuousness for this encoder type is 255. At 255, the entire image
  * is stripped away.
  *
- * This method requires the source image when decoding, instead of the conspicuousness factor. This makes guessing the
- * message by examining the image bits much more difficult.
+ * The default conspicuousness of 1 allows messages to be decoded by anyone, in the same way that reserved-place can be
+ * decoded. If you know where the bits are stored, you can just read them out. However, using a higher conspicuousness
+ * with the diff method (ironically) actually leads to more obfuscation. Each bit will be multiplied by a random value
+ * up to the conspicuousness factor before being added to the image, so no one bit can read to decode the message.
+ * Decoding an intercepted image is only possible if you can first correctly interpret the conspicuousness factor, by
+ * examining the color channel value "ceiling"—i.e., the max brightness value of the prepped image. This effect could be
+ * overdone, weakening the obfuscation. For example, a conspicuousness of 128 allows for message bits to have one of 128
+ * values. However, if an interceptor can figure out what true-white was supposed to be in the image, then they have
+ * guessed your ceiling (127). A value less than 10 is probably ideal; your mileage may very, depending on source image.
  */
 public interface DiffEncoder extends Encoder
 {

@@ -20,7 +20,7 @@ import us.marseilles.steganos.core.decoder.ReservedPlaceDecoder;
 import us.marseilles.steganos.core.encoder.ReservedPlaceEncoderImpl;
 
 /**
- * Example usage of steganos text-to-image encoder
+ * Command line tool for example usage of steganos text-to-image encoder
  */
 public class CommandLineEncoder
 {
@@ -188,11 +188,11 @@ public class CommandLineEncoder
 
     private enum Mode
     {
-        RESERVED_PLACE_ENCODE(3, 4, "reserved_place_encode source.file \"a message\" [2]"),
-        RESERVED_PLACE_DECODE(2, 3, "reserved_place_decode encoded.file [2]"),
-        DIFF_ENCODE(3, 4, "diff_encode source.file \"a message\" [2]"),
-        DIFF_DECODE(3, 3, "diff_decode source.file encoded.file"),
-        DIFF_IMG_PREP(2, 3, "diff_img_prep source.file [2]");
+        RESERVED_PLACE_ENCODE(3, 4, "reserved_place_encode source.png \"a message\" [2]"),
+        RESERVED_PLACE_DECODE(2, 3, "reserved_place_decode encoded.png [2]"),
+        DIFF_ENCODE(3, 4, "diff_encode source.png \"a message\" [2]"),
+        DIFF_DECODE(3, 3, "diff_decode source.png encoded.png"),
+        DIFF_IMG_PREP(2, 3, "diff_img_prep source.png [2]");
 
         private int minArgs;
         private int maxArgs;

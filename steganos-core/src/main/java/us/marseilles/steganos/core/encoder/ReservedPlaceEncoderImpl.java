@@ -1,6 +1,5 @@
 package us.marseilles.steganos.core.encoder;
 
-import java.awt.image.BufferedImage;
 import java.util.BitSet;
 import java.util.function.Function;
 

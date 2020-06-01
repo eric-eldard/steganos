@@ -2,6 +2,7 @@ package us.marseilles.steganos.core.encoder;
 
 import java.awt.image.BufferedImage;
 import java.util.BitSet;
+import java.util.Random;
 import java.util.function.Function;
 
 import us.marseilles.steganos.core.util.Utils;
@@ -12,15 +13,16 @@ public class DiffEncoderImpl implements DiffEncoder
 
     /**
      * The source image should already have the value of conspicuousness shaved off from this color channel (see
-     * {@link #prepSourceImage(BufferedImage, int)}. Add the bit to this, multiplied by the conspicuousness factor
-     * (for demo effect, when factor > 1).
+     * {@link #prepSourceImage(BufferedImage, int)}. Add the bit to this, multiplied by a random value up to the
+     * conspicuousness factor. Increasing conspicuousness value makes the effect visually more prominent, but also
+     * increases the difficulty of figuring out the message w/o source image.
      */
     @Override
     public int encodeNextValue(BitSet bitSet, int bitIndex, int sourceRGB, Function<Integer, Integer> channelFunc,
         int conspicuousness)
     {
         boolean moreBits = bitIndex < bitSet.length();
-        return channelFunc.apply(sourceRGB) + (moreBits && bitSet.get(bitIndex) ? 1 : 0) * conspicuousness;
+        return channelFunc.apply(sourceRGB) + (moreBits && bitSet.get(bitIndex) ? getRandom(conspicuousness) : 0);
     }
 
     @Override
@@ -61,5 +63,10 @@ public class DiffEncoderImpl implements DiffEncoder
         }
 
         return preppedImage;
+    }
+
+    private int getRandom(int ceiling)
+    {
+        return new Random().nextInt(ceiling) + 1;
     }
 }
