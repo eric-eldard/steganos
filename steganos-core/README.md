@@ -9,4 +9,5 @@ Conspicuousness factor available to make the effect more prominent for demoing. 
 `mvn clean package`
 
 ## TODO
+- ~~+/- diff method without image prepping~~
 - Add alpha channel support

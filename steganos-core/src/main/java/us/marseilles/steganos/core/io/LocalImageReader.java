@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- * An implementation of {@link ImageWriter} for reading from the local file system
+ * An implementation of {@link ImageReader} for reading from the local file system
  */
 public class LocalImageReader implements ImageReader
 {
