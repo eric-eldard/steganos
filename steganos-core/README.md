@@ -10,4 +10,3 @@ Conspicuousness factor available to make the effect more prominent for demoing. 
 
 ## TODO
 - Add alpha channel support
-- +/- diff method without image prepping

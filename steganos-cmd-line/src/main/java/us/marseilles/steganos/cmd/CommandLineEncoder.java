@@ -8,10 +8,10 @@ import org.apache.commons.io.FilenameUtils;
 import us.marseilles.steganos.core.decoder.DiffDecoder;
 import us.marseilles.steganos.core.decoder.DiffDecoderImpl;
 import us.marseilles.steganos.core.decoder.ReservedPlaceDecoderImpl;
-import us.marseilles.steganos.core.encoder.DiffEncoder;
-import us.marseilles.steganos.core.encoder.DiffEncoderImpl;
+import us.marseilles.steganos.core.encoder.DiffWithPrepEncoder;
+import us.marseilles.steganos.core.encoder.DiffWithPrepWithPrepEncoderImpl;
 import us.marseilles.steganos.core.encoder.Encoder;
-import us.marseilles.steganos.core.encoder.ReservedPlaceEncoder;
+import us.marseilles.steganos.core.encoder.UpDownDiffEncoder;
 import us.marseilles.steganos.core.io.ImageReader;
 import us.marseilles.steganos.core.io.ImageWriter;
 import us.marseilles.steganos.core.io.LocalImageReader;
@@ -26,9 +26,10 @@ public class CommandLineEncoder
 {
     private static ImageReader imageReader = new LocalImageReader();
     private static ImageWriter imageWriter = new LocalImageWriter();
-    private static ReservedPlaceEncoder reservedPlaceEncoder = new ReservedPlaceEncoderImpl();
+    private static Encoder reservedPlaceEncoder = new ReservedPlaceEncoderImpl();
     private static ReservedPlaceDecoder reservedPlaceDecoder = new ReservedPlaceDecoderImpl();
-    private static DiffEncoder diffEncoder = new DiffEncoderImpl();
+    private static DiffWithPrepEncoder diffWithPrepEncoder = new DiffWithPrepWithPrepEncoderImpl();
+    private static Encoder upDownDiffEncoder = new UpDownDiffEncoder();
     private static DiffDecoder diffDecoder = new DiffDecoderImpl();
 
     public static void main(String[] args)
@@ -48,19 +49,24 @@ public class CommandLineEncoder
                 int conspicuousness = args.length == 3 ? Integer.parseInt(args[2]) : 1;
                 printReservedPlaceDecoded(args[1], conspicuousness);
             }
-            else if (mode == Mode.DIFF_ENCODE)
-            {
-                int conspicuousness = args.length == 4 ? Integer.parseInt(args[3]) : 1;
-                saveEncoded(diffEncoder, args[1], args[2], conspicuousness);
-            }
-            else if (mode == Mode.DIFF_DECODE)
-            {
-                printDiffDecoded(args[1], args[2]);
-            }
             else if (mode == Mode.DIFF_IMG_PREP)
             {
                 int conspicuousness = args.length == 3 ? Integer.parseInt(args[2]) : 1;
                 savePreppedImage(args[1], conspicuousness);
+            }
+            else if (mode == Mode.DIFF_WITH_PREP_ENCODE)
+            {
+                int conspicuousness = args.length == 4 ? Integer.parseInt(args[3]) : 1;
+                saveEncoded(diffWithPrepEncoder, args[1], args[2], conspicuousness);
+            }
+            else if (mode == Mode.UP_DOWN_DIFF_ENCODE)
+            {
+                int conspicuousness = args.length == 4 ? Integer.parseInt(args[3]) : 1;
+                saveEncoded(upDownDiffEncoder, args[1], args[2], conspicuousness);
+            }
+            else if (mode == Mode.DIFF_DECODE)
+            {
+                printDiffDecoded(args[1], args[2]);
             }
         }
         catch (Exception ex)
@@ -109,7 +115,7 @@ public class CommandLineEncoder
         System.out.println("Prepping source file for diff-type encoding");
 
         BufferedImage sourceImage = imageReader.read(sourceFilePath);
-        BufferedImage preppedImage = diffEncoder.prepSourceImage(sourceImage, conspicuousness);
+        BufferedImage preppedImage = diffWithPrepEncoder.prepSourceImage(sourceImage, conspicuousness);
 
         String outputPath = appendToFileName(sourceFilePath, "-prepped");
         imageWriter.write(preppedImage, outputPath);
@@ -190,9 +196,10 @@ public class CommandLineEncoder
     {
         RESERVED_PLACE_ENCODE(3, 4, "reserved_place_encode source.png \"a message\" [2]"),
         RESERVED_PLACE_DECODE(2, 3, "reserved_place_decode encoded.png [2]"),
-        DIFF_ENCODE(3, 4, "diff_encode source.png \"a message\" [2]"),
-        DIFF_DECODE(3, 3, "diff_decode source.png encoded.png"),
-        DIFF_IMG_PREP(2, 3, "diff_img_prep source.png [2]");
+        DIFF_IMG_PREP(2, 3, "diff_img_prep source.png [2]"),
+        DIFF_WITH_PREP_ENCODE(3, 4, "diff_with_prep_encode source.png \"a message\" [2]"),
+        UP_DOWN_DIFF_ENCODE(3, 4, "up_down_diff_encode source.png \"a message\" [2]"),
+        DIFF_DECODE(3, 3, "diff_decode source.png encoded.png");
 
         private int minArgs;
         private int maxArgs;

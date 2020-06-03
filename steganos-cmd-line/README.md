@@ -18,13 +18,21 @@ reserved_place_decode tiger-encoded.png
 reserved_place_encode tiger.png "Hello World!" 5
 reserved_place_decode tiger-encoded.png 5
 
-# Prep/encode/decode using the diff method
+# Prep/encode/decode using the diff w/ prep method
 diff_img_prep "tiger.png"
-diff_encode tiger-prepped.png "Hello World"
+diff_with_prep_encode tiger-prepped.png "Hello World"
 diff_decode tiger-prepped.png tiger-prepped-encoded.png
 
-# Prep/encode/decode using the diff method and extra conspicuousness for demo effect
+# Prep/encode/decode using the diff w/ prep method and extra conspicuousness for demo effect
 diff_img_prep "tiger.png" 20
-diff_encode tiger-prepped.png "Hello World" 20
+diff_with_prep_encode tiger-prepped.png "Hello World" 20
 diff_decode tiger-prepped.png tiger-prepped-encoded.png
+
+# Encode/decode using the up/down diff method
+up_down_diff_encode tiger.png "Hello World"
+diff_decode tiger.png tiger-encoded.png
+
+# Encode/decode using the up/down diff method and extra conspicuousness for demo effect
+up_down_diff_encode tiger.png "Hello World" 80
+diff_decode tiger.png tiger-encoded.png
 ```

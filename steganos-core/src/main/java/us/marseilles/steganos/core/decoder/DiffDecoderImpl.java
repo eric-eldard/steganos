@@ -49,6 +49,6 @@ public class DiffDecoderImpl implements DiffDecoder
      */
     private boolean decodeValue(int sourceRGB, int encodedRGB, Function<Integer, Integer> channelFunc)
     {
-        return channelFunc.apply(encodedRGB) - channelFunc.apply(sourceRGB) > 0;
+        return (int) channelFunc.apply(encodedRGB) != channelFunc.apply(sourceRGB);
     }
 }

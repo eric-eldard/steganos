@@ -3,7 +3,7 @@ package us.marseilles.steganos.core.decoder;
 import java.awt.image.BufferedImage;
 
 /**
- * Decode a message encoded by a {@link us.marseilles.steganos.core.encoder.DiffEncoder}
+ * Handles decoding for all diff-type encoders
  */
 public interface DiffDecoder
 {

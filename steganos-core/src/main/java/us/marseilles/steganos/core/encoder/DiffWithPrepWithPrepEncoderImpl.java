@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import us.marseilles.steganos.core.util.Utils;
 
-public class DiffEncoderImpl implements DiffEncoder
+public class DiffWithPrepWithPrepEncoderImpl implements DiffWithPrepEncoder
 {
     private static final int MAX_CONSPICUOUSNESS = 255;
 
