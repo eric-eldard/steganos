@@ -1,7 +1,9 @@
 package us.marseilles.steganos.cmd;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.apache.commons.io.FilenameUtils;
@@ -78,9 +80,10 @@ public class CommandLineEncoder
         System.exit(0);
     }
 
-    private static void saveEncoded(Encoder encoder, String sourceFilePath, String message, int conspicuousness)
+    private static void saveEncoded(Encoder encoder, String sourceFilePath, String messageOrPath, int conspicuousness)
         throws IOException
     {
+        String message = getMessage(messageOrPath);
         System.out.println("Encoding message: " + message);
 
         BufferedImage sourceImage = imageReader.read(sourceFilePath);
@@ -91,6 +94,22 @@ public class CommandLineEncoder
 
         System.out.println("Encoding complete.");
         System.out.println("Encoded file location: " + outputPath);
+    }
+
+    private static String getMessage(String messageOrPath) throws IOException
+    {
+        String message;
+        File inputFile = new File(messageOrPath);
+        if (inputFile.exists())
+        {
+            message = Files.readString(inputFile.toPath());
+            System.out.println("Message read from file: " + messageOrPath);
+        }
+        else
+        {
+            message = messageOrPath;
+        }
+        return message;
     }
 
     private static void printReservedPlaceDecoded(String encodedFilePath, int conspicuousness) throws IOException
