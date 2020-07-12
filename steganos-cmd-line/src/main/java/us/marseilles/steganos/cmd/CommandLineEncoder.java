@@ -20,6 +20,7 @@ import us.marseilles.steganos.core.io.LocalImageReader;
 import us.marseilles.steganos.core.io.LocalImageWriter;
 import us.marseilles.steganos.core.decoder.ReservedPlaceDecoder;
 import us.marseilles.steganos.core.encoder.ReservedPlaceEncoderImpl;
+import us.marseilles.steganos.core.util.Utils;
 
 /**
  * Command line tool for example usage of steganos text-to-image encoder
@@ -41,7 +42,11 @@ public class CommandLineEncoder
         Mode mode = Mode.valueOf(args[0].toUpperCase());
         try
         {
-            if (mode == Mode.RESERVED_PLACE_ENCODE)
+            if (mode == Mode.MAX_ENCODABLE_BYTES)
+            {
+                getMaxEncodableBytes(args[1]);
+            }
+            else if (mode == Mode.RESERVED_PLACE_ENCODE)
             {
                 int conspicuousness = args.length == 4 ? Integer.parseInt(args[3]) : 1;
                 saveEncoded(reservedPlaceEncoder, args[1], args[2], conspicuousness);
@@ -70,6 +75,10 @@ public class CommandLineEncoder
             {
                 printDiffDecoded(args[1], args[2]);
             }
+            else if (mode == Mode.WATERMARK)
+            {
+                watermark(Arrays.copyOfRange(args, 1, args.length));
+            }
         }
         catch (Exception ex)
         {
@@ -78,6 +87,13 @@ public class CommandLineEncoder
         }
 
         System.exit(0);
+    }
+
+    private static void getMaxEncodableBytes(String sourceFilePath) throws IOException
+    {
+        BufferedImage sourceImage = imageReader.read(sourceFilePath);
+        System.out.println("Source file: " + sourceFilePath);
+        System.out.println("Max encodable bytes: " + Utils.getMaxEncodableBytes(sourceImage));
     }
 
     private static void saveEncoded(Encoder encoder, String sourceFilePath, String messageOrPath, int conspicuousness)
@@ -129,6 +145,14 @@ public class CommandLineEncoder
         System.out.println(decodedMessage);
     }
 
+    private static void watermark(String[] args) throws IOException
+    {
+        BufferedImage sourceImage = imageReader.read(args[1]);
+        int maxEncodableBytes = Utils.getMaxEncodableBytes(sourceImage);
+        args[2] = Utils.makeLongestEncodableString(maxEncodableBytes, args[2]);
+        main(args);
+    }
+
     private static void savePreppedImage(String sourceFilePath, int conspicuousness) throws IOException
     {
         System.out.println("Prepping source file for diff-type encoding");
@@ -174,6 +198,11 @@ public class CommandLineEncoder
             System.exit(1);
         }
 
+        if (mode == Mode.WATERMARK)
+        {
+            return; // valid mode; remaining args will be validated on 2nd pass
+        }
+
         // Check correct num of args for mode
         if (args.length < mode.minArgs || args.length > mode.maxArgs)
         {
@@ -213,12 +242,19 @@ public class CommandLineEncoder
 
     private enum Mode
     {
+        MAX_ENCODABLE_BYTES(2, 2, "max_encodable_bytes source.png"),
         RESERVED_PLACE_ENCODE(3, 4, "reserved_place_encode source.png \"a message\" [2]"),
         RESERVED_PLACE_DECODE(2, 3, "reserved_place_decode encoded.png [2]"),
         DIFF_IMG_PREP(2, 3, "diff_img_prep source.png [2]"),
         DIFF_WITH_PREP_ENCODE(3, 4, "diff_with_prep_encode source.png \"a message\" [2]"),
         UP_DOWN_DIFF_ENCODE(3, 4, "up_down_diff_encode source.png \"a message\" [2]"),
-        DIFF_DECODE(3, 3, "diff_decode source.png encoded.png");
+        DIFF_DECODE(3, 3, "diff_decode source.png encoded.png"),
+
+        /**
+         * Pass a piece of text to be repeated across the entire image the maximum number of times. The first arg after
+         * "watermark" must be the name of an encode mode.
+         */
+        WATERMARK(4, 5, "watermark up_down_diff_encode source.png \"repeat this watermark\" [2]");
 
         private int minArgs;
         private int maxArgs;

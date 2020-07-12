@@ -42,6 +42,18 @@ public final class Utils
         return image.getHeight() * image.getWidth() * NUM_COLOR_CHANNELS / 8;
     }
 
+    /**
+     * Generate a string, by repeating the provided string, that will use as many of the specified bytes as possible.
+     * Helpful for ensuring an entire image is covered by text when watermarking.
+     *
+     * Example: bytes=10, stringToRepeat="test ", return val="test test "
+     */
+    public static String makeLongestEncodableString(int bytes, String stringToRepeat)
+    {
+        int repeatTimes = bytes / stringToRepeat.getBytes().length;
+        return stringToRepeat.repeat(repeatTimes);
+    }
+
     public static void validateConspicuousness(int conspicuousness, int max)
     {
         if (conspicuousness < 1 || conspicuousness > max)
